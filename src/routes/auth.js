@@ -11,7 +11,7 @@ const cleanPhone=(countryCode,phone)=> {
   let n=String(phone||"").replace(/[^0-9]/g,"");
   if(n.startsWith("0")) n=n.slice(1);
   if(!cc||n.length<7||n.length>14)return null;
-  return cc+" "+n;
+  return cc+n;
 };
 
 export function authRouter(secret){
