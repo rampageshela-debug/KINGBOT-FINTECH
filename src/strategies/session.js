@@ -1,0 +1,1 @@
+import{signal,base}from"./common.js";export function run(c){const b=base(c,"SESSION");if(b.direction)return b;const h=new Date().getUTCHours(),d=h>=7&&h<16?(b.last.close>b.prev.close?"BUY":"SELL"):"NO_TRADE";return signal({strategy:"SESSION",symbol:c.symbol,timeframe:c.timeframe,direction:d,confidence:.59,reasons:["SESSION_WINDOW"]})}
