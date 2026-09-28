@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import { Router } from "express";
 import { pool } from "../db/client.js";
 import { audit } from "../utils/audit.js";
@@ -16,28 +15,6 @@ const cleanPhone=(countryCode,phone)=> {
 
 export function authRouter(secret){
   const r=Router();
-  r.post("/register",async(req,res)=>{
-    try{
-      const {email,displayName,password,countryCode,phoneNumber}=req.body||{};
-      if(typeof email!=="string"||typeof displayName!=="string"||typeof password!=="string"||password.length<12)return res.status(400).json({error:"Email, name and 12+ character password required"});
-      const e=email.trim().toLowerCase(), phone=cleanPhone(countryCode,phoneNumber);
-      if(!phone)return res.status(400).json({error:"Select a country code and enter a valid phone number"});
-      if((await pool.query("SELECT 1 FROM users WHERE email=$1",[e])).rowCount)return res.status(409).json({error:"Account already exists"});
-      const country=String(countryCode||"").replace(/[^+0-9]/g,"");
-      const role=roleForEmail(e);
-      const u=(await pool.query("INSERT INTO users(email,display_name,password_hash,phone_country,phone_number,role) VALUES($1,$2,$3,$4,$5,$6) RETURNING id,email,display_name,role,phone_country,phone_number,email_verified,phone_verified",[e,displayName.trim().slice(0,80),hashPassword(password),country,phone,role])).rows[0];
-      await pool.query("INSERT INTO risk_profiles(user_id) VALUES($1) ON CONFLICT DO NOTHING",[u.id]);
-      const emailCode=makeCode();
-      await pool.query("INSERT INTO verification_challenges(id,user_id,channel,code_hash,provider,expires_at) VALUES($1,$2,'email',$3,'resend',$4)",[crypto.randomUUID(),u.id,hashCode(emailCode),new Date(Date.now()+10*60*1000)]);
-      await sendEmailCode(e,emailCode);
-      let phoneProvider="twilio_verify";
-      try{await sendPhoneCode(phone);}catch(err){phoneProvider="unconfigured";if(process.env.NODE_ENV==="production")return res.status(503).json({error:err.message,user:{id:u.id,email:u.email}});}
-      await pool.query("INSERT INTO verification_challenges(id,user_id,channel,provider,expires_at) VALUES($1,$2,'phone',$3,$4)",[crypto.randomUUID(),u.id,phoneProvider,new Date(Date.now()+10*60*1000)]);
-      await audit(u.id,"USER_REGISTERED",{email_verified:false,phone_verified:false});
-      res.cookie("bk_session",signSession(u,secret),{httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",maxAge:604800000});
-      res.status(201).json({user:u,verificationRequired:true,developmentEmailCode:process.env.NODE_ENV==="production"?undefined:emailCode,developmentPhoneCode:process.env.NODE_ENV==="production"?undefined:"000000"});
-    }catch(e){res.status(400).json({error:e.message||"Registration failed"});}
-  });
   r.post("/login",async(req,res)=>{
     try{
       const {email,password}=req.body||{};
