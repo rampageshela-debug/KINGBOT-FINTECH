@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { Router } from "express";
 import { pool } from "../db/client.js";
 import { requireRole } from "../utils/roles.js";
@@ -20,8 +21,8 @@ export function adminRouter(secret) {
     try{
       await client.query("BEGIN");
       const p=(await client.query("SELECT * FROM payment_requests WHERE id=$1 FOR UPDATE",[req.params.id])).rows[0];
-      if(!p) { await client.query("ROLLBACK"); return res.status(404).json({error:"Payment request not found"}); }
-      if(p.status!=="pending") { await client.query("ROLLBACK"); return res.status(409).json({error:"Payment request already reviewed"}); }
+      if(!p){await client.query("ROLLBACK");return res.status(404).json({error:"Payment request not found"});}
+      if(p.status!=="pending"){await client.query("ROLLBACK");return res.status(409).json({error:"Payment request already reviewed"});}
       const end=(await client.query("SELECT GREATEST(COALESCE(MAX(ends_at),now()),now()) + interval '1 month' AS ends_at FROM subscriptions WHERE user_id=$1",[p.user_id])).rows[0].ends_at;
       await client.query("UPDATE subscriptions SET status='expired' WHERE user_id=$1 AND status='active' AND ends_at < now()",[p.user_id]);
       const subId=crypto.randomUUID();
