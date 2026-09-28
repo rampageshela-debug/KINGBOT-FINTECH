@@ -1,0 +1,2 @@
+import {signal,base} from "./common.js";
+export function run(ctx){const b=base(ctx,"BREAKOUT");if(b.direction)return b;const p=b.cs.slice(-12,-1),hi=Math.max(...p.map(x=>x.high)),lo=Math.min(...p.map(x=>x.low));const d=b.last.close>hi?"BUY":b.last.close<lo?"SELL":"NO_TRADE";return signal({strategy:"BREAKOUT",symbol:ctx.symbol,timeframe:ctx.timeframe,direction:d,confidence:.74,entry:b.entry,stop_loss:d==="BUY"?b.entry-b.a*1.5:d==="SELL"?b.entry+b.a*1.5:null,take_profit:d==="BUY"?b.entry+b.a*2.2:d==="SELL"?b.entry-b.a*2.2:null,reasons:["RANGE_BREAK","VOLATILITY_EXPANSION"]})}
