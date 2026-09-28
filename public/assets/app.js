@@ -20,9 +20,19 @@ const engines = [
 ];
 
 const templates = [
- ["KING SMC","SMC","/assets/bots/king-smc.webp"],["KING BREAKOUT","BREAKOUT","/assets/bots/king-breakout.webp"],["KING TREND","TREND","/assets/bots/king-trend.webp"],["KING FLIPPER","FLIPPER","/assets/bots/king-flipper.webp"],
- ["KING LADDER","LADDER","/assets/bots/king-ladder.webp"],["KING LIQUIDITY","LIQUIDITY","/assets/bots/king-liquidity.webp"],["KING ORDERFLOW","ORDERFLOW","/assets/bots/king-orderflow.webp"],["KING MOMENTUM","MOMENTUM","/assets/bots/king-momentum.webp"],
- ["KING MEAN REVERSION","MEAN_REVERSION","/assets/bots/king-mean-reversion.webp"],["KING SESSION","SESSION","/assets/bots/king-session.webp"],["KING VOLATILITY","VOLATILITY","/assets/bots/king-volatility.webp"],["KING RANGE","RANGE","/assets/bots/king-range.webp"],["KING AI FUSION","AI_FUSION","/assets/bots/king-ai-fusion.webp"]
+ ["KINGBOT STRATEGIC","STRATEGIC","/assets/bots/KINGBOT_STRATEGIC(1).png"],
+ ["KINGBOT FLIPPRO","FLIPPRO","/assets/bots/KINGBOT_FLIPPRO(1).png"],
+ ["KINGBOT BREAKOUT","BREAKOUT","/assets/bots/KINGBOT_BREAKOUT(1).png"],
+ ["KINGBOT SMC PRO","SMC_PRO","/assets/bots/KINGBOT_SMC_PRO(1).png"],
+ ["KINGBOT LADDER FLIP V8","LADDER_FLIP_V8","/assets/bots/KINGBOT_LADDER_FLIP_V8(1).png"],
+ ["KING TREND","TREND","/assets/bots/king-trend.webp"],
+ ["KING LIQUIDITY","LIQUIDITY","/assets/bots/king-liquidity.webp"],
+ ["KING ORDERFLOW","ORDERFLOW","/assets/bots/king-orderflow.webp"],
+ ["KING MOMENTUM","MOMENTUM","/assets/bots/king-momentum.webp"],
+ ["KING MEAN REVERSION","MEAN_REVERSION","/assets/bots/king-mean-reversion.webp"],
+ ["KING SESSION","SESSION","/assets/bots/king-session.webp"],
+ ["KING VOLATILITY","VOLATILITY","/assets/bots/king-volatility.webp"],
+ ["KING RANGE","RANGE","/assets/bots/king-range.webp"]
 ];
 
 const symbols = [
@@ -118,11 +128,11 @@ function lockedCard(t){return "<div class='lock-overlay'><div class='lock-box'><
 function dashboardView(){
   const d=state.dashboard||{},r=d.risk||{},s=d.subscription;
   const cards=[
-    ["#09b8ff","◈","KINGBOT STRATEGIC","MULTI-STRATEGY",["Multi-Strategy Trading","AI Market Analysis","Adaptive Execution","Consistent Results"]],
-    ["#c74cff","⌁","KINGBOT FLIPPER","HIGH-SPEED FLIPPING",["Quick Entry & Exit","High Frequency Trades","Maximum Opportunity","Precision Execution"]],
-    ["#ffc400","↗","KINGBOT BREAKOUT","MOMENTUM",["Trend Breakout Detection","Volatility Trading","Big Moves","Momentum Logic"]],
-    ["#00f47b","⌬","KINGBOT SMC PRO","SMART MONEY",["Smart Money Concepts","Precision Entry","Profit Potential","Institutional Logic"]],
-    ["#ff1748","⇅","KINGBOT LADDER FLIP V8","LADDER SYSTEM",["Ladder Entry System","Risk Control","Steady Growth","Compounding Logic"]]
+    ["/assets/bots/KINGBOT_STRATEGIC(1).png","#08b9ff","KINGBOT STRATEGIC","MULTI-STRATEGY",["Multi-Strategy Trading","AI Market Analysis","Adaptive Execution","Consistent Results"]],
+    ["/assets/bots/KINGBOT_FLIPPRO(1).png","#cf4cff","KINGBOT FLIPPER","HIGH-SPEED FLIPPING",["Quick Entry & Exit","High Frequency Trades","Maximum Opportunity","Precision Execution"]],
+    ["/assets/bots/KINGBOT_BREAKOUT(1).png","#ffc400","KINGBOT BREAKOUT","MOMENTUM",["Trend Breakout Detection","Volatility Trading","Big Moves","Momentum Logic"]],
+    ["/assets/bots/KINGBOT_SMC_PRO(1).png","#00f47b","KINGBOT SMC PRO","SMART MONEY",["Smart Money Concepts","Precision Entry","Profit Potential","Institutional Logic"]],
+    ["/assets/bots/KINGBOT_LADDER_FLIP_V8(1).png","#ff1748","KINGBOT LADDER FLIP V8","LADDER SYSTEM",["Ladder Entry System","Risk Control","Steady Growth","Compounding Logic"]]
   ];
   const tickers=[
     ["◒","XAUUSD","3,748.52","+0.68%"],["◉","EURUSD","1.1723","+0.24%"],["◍","GBPUSD","1.3587","+0.31%"],["₿","BTCUSD","63,482.21","+1.12%"]
@@ -143,12 +153,11 @@ function dashboardView(){
         "<div class='hero-features'><div class='hero-feature'><strong>✦</strong>AI POWERED</div><div class='hero-feature'><strong>↗</strong>REAL MARKET DATA</div><div class='hero-feature'><strong>⚙</strong>AUTOMATED TRADING</div><div class='hero-feature'><strong>♢</strong>RISK MANAGEMENT</div><div class='hero-feature'><strong>◷</strong>24/7 OPERATION</div></div>"+
       "</section>"+
       "<div class='strategy-head'><span class='crown'>♔</span><h2>KINGBOT STRATEGIES</h2><div class='strategy-line'></div><span class='strategy-count'>CHOOSE YOUR STRATEGY</span></div>"+
-      "<section class='strategy-grid'>"+cards.map(c=>"<article class='strategy-card' style='--card-color:"+c[0]+"'><div class='strategy-art'><span class='strategy-icon'>"+c[1]+"</span></div><div class='strategy-body'><small>KINGBOT</small><div class='strategy-name'>"+c[2].replace("KINGBOT ","")+"</div><div class='strategy-type'>"+c[3]+"</div><ul class='strategy-list'>"+c[4].map(x=>"<li>"+x+"</li>").join("")+"</ul><button class='launch' onclick=\"location.hash='#/bots';toast('Opening '+this.closest('.strategy-card').querySelector('.strategy-name').textContent+' bot configuration.')\">Launch Bot <span style='float:right'>→</span></button></div></article>").join("")+"</section>"+
+      "<section class='strategy-grid'>"+cards.map(c=>"<article class='strategy-card' style='--card-color:"+c[1]+"'><div class='strategy-art'><img src='"+c[0]+"' alt='"+c[2]+"' loading='eager'><span class='strategy-icon'>"+(c[2].includes("STRATEGIC")?"◈":c[2].includes("FLIPPER")?"⚡":c[2].includes("BREAKOUT")?"↗":c[2].includes("SMC")?"⌬":"⇅")+"</span></div><div class='strategy-body'><small>KINGBOT</small><div class='strategy-name'>"+c[2].replace("KINGBOT ","")+"</div><div class='strategy-type'>"+c[3]+"</div><ul class='strategy-list'>"+c[4].map(x=>"<li>"+x+"</li>").join("")+"</ul><button class='launch' onclick=\"location.hash='#/bots';toast('Opening "+c[2].replace("KINGBOT ","")+" bot configuration.')\">Launch Bot <span style='float:right'>→</span></button></div></article>").join("")+"</section>"+
       "<section class='market-strip'><div class='market-ticker'><div class='ticker-label'><span class='live-dot' style='margin-right:7px'></span>LIVE MARKET</div>"+tickers.map(t=>"<div class='ticker-item'><span style='font-size:20px'>"+t[0]+"</span><div><div class='ticker-symbol'>"+t[1]+"</div><div class='ticker-price'>"+t[2]+" <span class='ticker-change'>"+t[3]+"</span></div></div></div>").join("")+"</div><div class='ai-banner'><div class='ai-icon'>♔</div><div><b>POWERED BY AI.</b><span>BUILT FOR CONTROLLED INTELLIGENCE.</span></div><div style='margin-left:auto;font-size:25px'>↗</div></div></section>"+
       "<div class='footer'>BOT KING · TRADING OS · Consistency · Resilience · Innovation</div>"+
       "</main></div></div>";
 }
-
 function botsView(){
   const active=!!state.subscription;
   return "<div class='page-head'><div><div class='eyebrow'>BOT FACTORY · CONTROLLED DEPLOYMENT</div><h1>Bot Generator</h1><p class='lead'>Choose a template, bind an engine, configure market context and register a bot instance. Deployment stays gated by subscription and verified broker connectors.</p></div><span class='status-chip "+(active?"good":"lock")+"'>"+(active?"PAID ACCESS ACTIVE":"DEPLOYMENT LOCKED")+"</span></div>"+
