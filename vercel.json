@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "routes": [
+    { "src": "/assets/(.*)", "dest": "/public/assets/$1" },
+    { "src": "/(.*\\.(css|js|png|jpg|jpeg|webp|svg|ico|gif|woff2?|ttf))", "dest": "/public/$1" },
+    { "src": "/(.*)", "dest": "/public/index.html" }
+  ]
+}
