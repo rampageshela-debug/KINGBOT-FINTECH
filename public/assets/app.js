@@ -40,7 +40,21 @@ const initials = (s="K") => String(s).split(/\\s+/).filter(Boolean).slice(0,2).m
 function toast(msg){const root=$("#toastRoot");const el=document.createElement("div");el.className="toast";el.textContent=msg;root.appendChild(el);setTimeout(()=>el.remove(),3200);}
 function setTheme(t){if(!themes.some(x=>x[0]===t))t="obsidian";document.body.dataset.theme=t;localStorage.setItem("bk_theme",t);}
 function avatar(){return state.user?.avatar_url?'<img src="'+esc(state.user.avatar_url)+'" alt="Profile">':esc(initials(state.user?.display_name));}
-async function api(path,opt={}){const base=window.KINGBOT_API||"https://kingbot-fintech-api.onrender.com";const url=path.startsWith("/api/")?base+path:path;const r=await fetch(url,{credentials:"include",headers:{"Content-Type":"application/json",...(opt.headers||{})},...opt});let d={};try{d=await r.json()}catch{}if(!r.ok){const e=new Error(d.error||"Request failed");e.status=r.status;e.data=d;throw e}return d;}
+async function api(path,opt={}){
+  const base=window.KINGBOT_API||"https://kingbot-fintech-api.onrender.com";
+  const url=path.startsWith("/api/")?base+path:path;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),8000);
+  try{
+    const r=await fetch(url,{credentials:"include",headers:{"Content-Type":"application/json",...(opt.headers||{})},...opt,signal:controller.signal});
+    let d={};try{d=await r.json()}catch{}
+    if(!r.ok){const e=new Error(d.error||"Request failed");e.status=r.status;e.data=d;throw e}
+    return d;
+  }catch(e){
+    if(e.name==="AbortError") throw new Error("API timeout — frontend remains available while backend is offline.");
+    throw e;
+  }finally{clearTimeout(timer)}
+}
 
 function navItem(k,icon,label){return "<a href='#/"+k+"' class='"+(state.route===k?"active":"")+"'><span class='icon'>"+icon+"</span>"+label+"</a>";}
 function sidebar(){
@@ -129,21 +143,55 @@ async function loadDashboard(){if(!state.user)return;try{const d=await api("/api
 function protectedRoute(){return ["dashboard","bots","ai","watchlist","analytics","risk","accounts","billing","support","settings","security","notifications","profile","admin","developer","verify"].includes(state.route);}
 async function render(){
   state.route=(location.hash||"#/home").slice(2)||"home";
+  const publicRoute=["home","login","signup"].includes(state.route);
+
+  // Public pages render immediately. A failed/cold API must never leave the whole
+  // application blank while the browser waits for authentication state.
+  if(publicRoute){
+    const publicHtml=state.route==="home"?homeView():authView(state.route);
+    $("#app").innerHTML=publicHtml;
+    bind();
+    postRender().catch(e=>toast(e.message));
+    refreshUser().then(()=>{
+      if(state.user && state.route==="home") render();
+    }).catch(()=>{});
+    return;
+  }
+
   try{await refreshUser()}catch{}
-  if(!state.user&&protectedRoute()&&state.route!=="billing"){if(state.route==="verify"){location.hash="#/login";return}location.hash="#/login";return;}
+  if(!state.user&&protectedRoute()&&state.route!=="billing"){
+    if(state.route==="verify"){location.hash="#/login";return}
+    location.hash="#/login";return;
+  }
   if(state.user)await loadDashboard();
+
   let html="";
-  if(!state.user&&(state.route==="home"||state.route==="login"||state.route==="signup"))html=state.route==="home"?homeView():authView(state.route);
-  else if(state.route==="verify")html=verifyView();
-  else {switch(state.route){
-    case "home":html=state.user?shell(dashboardView()):homeView();break;
-    case "dashboard":html=shell(dashboardView());break;case "bots":html=shell(botsView());break;case "ai":html=shell(aiView());break;
-    case "markets":html=shell(marketView("markets"));break;case "watchlist":html=shell(marketView("watchlist"));break;case "analytics":html=shell(analyticsView());break;case "billing":html=shell(billingView());break;
-    case "accounts":html=shell(accountsView());break;case "risk":html=shell(riskView());break;case "support":html=shell(supportView());break;case "settings":html=shell(settingsView());break;
-    case "security":html=shell(securityView());break;case "notifications":html=shell(notificationsView());break;case "profile":html=shell(profileView());break;case "admin":html=shell(state.user?.role==="admin"?adminView():"<div class='empty'><b>Restricted control area</b><span>Admin email allowlist required.</span></div>");break;
-    case "developer":html=shell(state.user?.role==="developer"?developerView():"<div class='empty'><b>Developer control area</b><span>Developer email allowlist required.</span></div>");break;default:html=shell(dashboardView());
-  }}
-  $("#app").innerHTML=html;bind();postRender().catch(e=>toast(e.message));
+  if(state.route==="verify")html=verifyView();
+  else {
+    switch(state.route){
+      case "home":html=state.user?shell(dashboardView()):homeView();break;
+      case "dashboard":html=shell(dashboardView());break;
+      case "bots":html=shell(botsView());break;
+      case "ai":html=shell(aiView());break;
+      case "markets":html=shell(marketView("markets"));break;
+      case "watchlist":html=shell(marketView("watchlist"));break;
+      case "analytics":html=shell(analyticsView());break;
+      case "billing":html=shell(billingView());break;
+      case "accounts":html=shell(accountsView());break;
+      case "risk":html=shell(riskView());break;
+      case "support":html=shell(supportView());break;
+      case "settings":html=shell(settingsView());break;
+      case "security":html=shell(securityView());break;
+      case "notifications":html=shell(notificationsView());break;
+      case "profile":html=shell(profileView());break;
+      case "admin":html=shell(state.user?.role==="admin"?adminView():"<div class='empty'><b>Restricted control area</b><span>Admin email allowlist required.</span></div>");break;
+      case "developer":html=shell(state.user?.role==="developer"?developerView():"<div class='empty'><b>Developer control area</b><span>Developer email allowlist required.</span></div>");break;
+      default:html=shell(dashboardView());
+    }
+  }
+  $("#app").innerHTML=html;
+  bind();
+  postRender().catch(e=>toast(e.message));
 }
 function bind(){const b=$("#profileBtn");if(b)b.onclick=()=>$("#profileMenu")?.classList.toggle("show");const f=$("#authForm");if(f)f.onsubmit=handleAuth;const ap=$("#aiPrompt");if(ap)ap.onkeydown=(e)=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendAI()}};}
 async function handleAuth(e){
