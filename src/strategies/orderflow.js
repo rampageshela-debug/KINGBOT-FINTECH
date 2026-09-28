@@ -1,0 +1,1 @@
+import{signal,base,sma}from"./common.js";export function run(c){const b=base(c,"ORDERFLOW");if(b.direction)return b;const v=sma(b.cs.map(x=>x.volume||0),20),d=v&&b.last.volume>v*1.3?(b.last.close>b.prev.close?"BUY":"SELL"):"NO_TRADE";return signal({strategy:"ORDERFLOW",symbol:c.symbol,timeframe:c.timeframe,direction:d,confidence:.68,reasons:["VOLUME_SURGE"]})}
