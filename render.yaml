@@ -1,10 +1,9 @@
 services:
   - type: web
-    name: kingbot-fintech
+    name: kingbot-fintech-api
     runtime: node
     plan: free
     region: frankfurt
-    branch: main
     buildCommand: npm install --omit=dev
     startCommand: npm start
     healthCheckPath: /api/health
@@ -12,13 +11,15 @@ services:
       - key: NODE_ENV
         value: production
       - key: TRADING_ENABLED
-        value: "false"
-      - key: DATABASE_URL
-        sync: false
-      - key: SESSION_SECRET
-        sync: false
+        value: false
       - key: APP_ORIGIN
-        sync: false
+        value: https://kingbot-fintech-ui.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kingbot-fintech-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
       - key: ADMIN_EMAILS
         sync: false
       - key: DEVELOPER_EMAILS
@@ -37,8 +38,10 @@ services:
         sync: false
       - key: TWILIO_VERIFY_SERVICE_SID
         sync: false
-databases:
-  - name: kingbot-fintech-db
-    databaseName: kingbot
+
+  - type: static
+    name: kingbot-fintech-ui
     plan: free
     region: frankfurt
+    buildCommand: ""
+    publishPath: public
