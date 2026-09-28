@@ -1,0 +1,2 @@
+import {signal,base,sma} from "./common.js";
+export function run(ctx){const b=base(ctx,"SMC");if(b.direction)return b;const m=sma(b.cs.map(x=>x.close),20);const d=b.last.close>m&&b.last.low<b.prev.low?"BUY":b.last.close<m&&b.last.high>b.prev.high?"SELL":"NO_TRADE";return signal({strategy:"SMC",symbol:ctx.symbol,timeframe:ctx.timeframe,direction:d,confidence:.78,entry:b.entry,stop_loss:d==="BUY"?b.entry-b.a*1.5:d==="SELL"?b.entry+b.a*1.5:null,take_profit:d==="BUY"?b.entry+b.a*2.2:d==="SELL"?b.entry-b.a*2.2:null,reasons:["STRUCTURE_SCAN","LIQUIDITY_CONTEXT"]})}
