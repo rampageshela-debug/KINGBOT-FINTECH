@@ -39,9 +39,8 @@ services:
       - key: TWILIO_VERIFY_SERVICE_SID
         sync: false
 
-  - type: static_site
+  - type: web
+    runtime: static
     name: kingbot-fintech-ui
-    plan: free
-    region: frankfurt
     buildCommand: ""
-    publishPath: public
+    staticPublishPath: ./public
