@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: kingbot-fintech
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRADING_ENABLED
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: APP_ORIGIN
+        sync: false
+databases:
+  - name: kingbot-fintech-db
+    databaseName: kingbot
+    plan: free
+    region: frankfurt
