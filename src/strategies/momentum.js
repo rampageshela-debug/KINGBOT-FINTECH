@@ -1,0 +1,1 @@
+import{signal,base}from"./common.js";export function run(c){const b=base(c,"MOMENTUM");if(b.direction)return b;const q=b.last.close-(b.cs.at(-5)?.close||b.prev.close),d=Math.abs(q)>b.a*.9?(q>0?"BUY":"SELL"):"NO_TRADE";return signal({strategy:"MOMENTUM",symbol:c.symbol,timeframe:c.timeframe,direction:d,confidence:.72,reasons:["PRICE_ACCELERATION"]})}
