@@ -1,0 +1,1 @@
+import{signal,base,sma}from"./common.js";export function run(c){const b=base(c,"MEAN_REVERSION");if(b.direction)return b;const m=sma(b.cs.map(x=>x.close),20),z=(b.last.close-m)/b.a,d=z<-2?"BUY":z>2?"SELL":"NO_TRADE";return signal({strategy:"MEAN_REVERSION",symbol:c.symbol,timeframe:c.timeframe,direction:d,confidence:.67,reasons:["DEVIATION_SCAN"]})}
