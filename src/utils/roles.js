@@ -1,3 +1,4 @@
+import { readSession } from "./crypto.js";
 const split = (value) => String(value || "").split(",").map(v => v.trim().toLowerCase()).filter(Boolean);
 export function roleForEmail(email) {
   const e = String(email || "").trim().toLowerCase();
@@ -6,7 +7,6 @@ export function roleForEmail(email) {
   return "user";
 }
 export function requireRole(secret, allowed) {
-  const { readSession } = require("./crypto.js");
   return (req, res, next) => {
     const session = readSession(req.cookies?.bk_session, secret);
     if (!session) return res.status(401).json({ error: "Authentication required" });
