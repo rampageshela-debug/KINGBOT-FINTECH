@@ -1,0 +1,1 @@
+import{signal,base}from"./common.js";export function run(c){const b=base(c,"VOLATILITY");if(b.direction)return b;const d=b.last.close>b.prev.close?"BUY":"SELL";return signal({strategy:"VOLATILITY",symbol:c.symbol,timeframe:c.timeframe,direction:d,confidence:.62,reasons:["VOLATILITY_REGIME"]})}
