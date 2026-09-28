@@ -39,7 +39,7 @@ services:
       - key: TWILIO_VERIFY_SERVICE_SID
         sync: false
 
-  - type: static
+  - type: static_site
     name: kingbot-fintech-ui
     plan: free
     region: frankfurt
