@@ -40,7 +40,7 @@ const initials = (s="K") => String(s).split(/\\s+/).filter(Boolean).slice(0,2).m
 function toast(msg){const root=$("#toastRoot");const el=document.createElement("div");el.className="toast";el.textContent=msg;root.appendChild(el);setTimeout(()=>el.remove(),3200);}
 function setTheme(t){if(!themes.some(x=>x[0]===t))t="obsidian";document.body.dataset.theme=t;localStorage.setItem("bk_theme",t);}
 function avatar(){return state.user?.avatar_url?'<img src="'+esc(state.user.avatar_url)+'" alt="Profile">':esc(initials(state.user?.display_name));}
-async function api(path,opt={}){const r=await fetch(path,{credentials:"include",headers:{"Content-Type":"application/json",...(opt.headers||{})},...opt});let d={};try{d=await r.json()}catch{}if(!r.ok){const e=new Error(d.error||"Request failed");e.status=r.status;e.data=d;throw e}return d;}
+async function api(path,opt={}){const base=window.KINGBOT_API||"https://kingbot-fintech-api.onrender.com";const url=path.startsWith("/api/")?base+path:path;const r=await fetch(url,{credentials:"include",headers:{"Content-Type":"application/json",...(opt.headers||{})},...opt});let d={};try{d=await r.json()}catch{}if(!r.ok){const e=new Error(d.error||"Request failed");e.status=r.status;e.data=d;throw e}return d;}
 
 function navItem(k,icon,label){return "<a href='#/"+k+"' class='"+(state.route===k?"active":"")+"'><span class='icon'>"+icon+"</span>"+label+"</a>";}
 function sidebar(){
