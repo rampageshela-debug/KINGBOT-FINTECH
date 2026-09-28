@@ -19,6 +19,24 @@ services:
         sync: false
       - key: APP_ORIGIN
         sync: false
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: DEVELOPER_EMAILS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_VERIFY_SERVICE_SID
+        sync: false
 databases:
   - name: kingbot-fintech-db
     databaseName: kingbot
