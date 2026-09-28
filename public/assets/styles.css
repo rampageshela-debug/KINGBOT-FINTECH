@@ -576,3 +576,15 @@ linear-gradient(145deg,#d9e6ef 4%,#3a4b5d 31%,#071018 58%,var(--card-color) 81%,
 @media(max-width:900px){.botking-layout{grid-template-columns:1fr}.botking-sidebar{display:none}.botking-main{padding:0 12px 85px}.botking-hero{height:340px}.hero-bot-visual{width:52%;left:-7%}.hero-branding{left:34%;right:3%;top:28px}.hero-quote{right:12px;top:175px;width:150px;font-size:13px}.hero-features{left:29%;bottom:10px}.hero-feature{width:85px}.strategy-grid{grid-template-columns:repeat(2,1fr)}.market-strip{grid-template-columns:1fr}.market-ticker{grid-template-columns:90px repeat(4,1fr);overflow:auto}.botking-topnav{grid-template-columns:1fr auto;height:66px}.botking-toplinks{display:none}.botking-topright{gap:6px}.user-mini{display:none}}
 @media(max-width:620px){.strategy-grid{grid-template-columns:1fr}.botking-hero{height:430px}.hero-bot-visual{width:85%;left:-18%;bottom:-20px}.hero-branding{left:18%;right:4%;top:22px}.hero-branding h2{font-size:33px}.hero-branding small{font-size:10px}.hero-tagline{font-size:9px}.hero-quote{right:12px;top:180px;width:155px}.hero-features{left:15%;right:3%;flex-wrap:wrap}.hero-feature{width:25%;min-width:75px}.strategy-head h2{font-size:19px}}
 
+
+
+/* Uploaded strategy artwork — use the full artwork as the visual card surface */
+.strategy-card{height:442px}
+.strategy-art{height:100%;position:absolute;inset:0;display:block}
+.strategy-art:before,.strategy-art:after{display:none}
+.strategy-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:block;z-index:1}
+.strategy-art .strategy-icon{z-index:3}
+.strategy-body{position:absolute;left:12px;right:12px;bottom:10px;z-index:5;padding:0}
+.strategy-body>small,.strategy-body .strategy-name,.strategy-body .strategy-type,.strategy-body .strategy-list{display:none}
+.strategy-body .launch{display:block;height:38px;background:linear-gradient(135deg,color-mix(in srgb,var(--card-color) 34%,#001018),color-mix(in srgb,var(--card-color) 9%,#001018));backdrop-filter:blur(6px);border-color:color-mix(in srgb,var(--card-color) 82%,white 4%);box-shadow:0 0 22px color-mix(in srgb,var(--card-color) 22%,transparent),inset 0 0 14px color-mix(in srgb,var(--card-color) 10%,transparent)}
+
