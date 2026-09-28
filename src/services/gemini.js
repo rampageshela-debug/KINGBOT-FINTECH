@@ -15,6 +15,7 @@ export async function askGemini({ prompt, system, history = [] }) {
     model,
     contents,
     config: {
+      thinkingConfig: { thinkingLevel: "medium" },
       systemInstruction: system || "You are KING AI, an institutional trading research assistant. Explain market structure, risk, analytics and system behavior clearly. Never claim guaranteed returns and never place trades. Separate facts from hypotheses."
     }
   });
